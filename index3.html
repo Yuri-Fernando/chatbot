@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot com Integração de APIs de IA</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f4; 
+            padding: 20px; 
+        }
+        #chat-box { 
+            width: 100%; 
+            height: 300px; 
+            overflow-y: auto; 
+            background-color: #fff; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+        }
+        input[type="text"] { 
+            width: 70%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+        }
+        select { 
+            padding: 10px; 
+            border-radius: 4px; 
+        }
+        button { 
+            padding: 10px 15px; 
+            background-color: #4CAF50; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+        button:hover { 
+            background-color: #45a049; 
+        }
+        .message { 
+            margin-bottom: 10px; 
+        }
+        .user { 
+            text-align: right; 
+            color: blue; 
+        }
+        .bot { 
+            text-align: left; 
+            color: green; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Chatbot com Integração de APIs de IA</h1>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Digite sua pergunta...">
+    <select id="service-select">
+        <option value="gpt">GPT (OpenAI)</option>
+        <option value="google">Google Dialogflow</option>
+        <option value="alexa">Alexa (Simulado)</option>
+    </select>
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        function sendMessage() {
+            var userMessage = document.getElementById("user-input").value;
+            var service = document.getElementById("service-select").value;
+            if (userMessage.trim() === "") return;
+            var chatBox = document.getElementById("chat-box");
+
+            // Exibe a mensagem do usuário
+            chatBox.innerHTML += '<div class="message user"><strong>Você:</strong> ' + userMessage + '</div>';
+            document.getElementById("user-input").value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Envia a mensagem para o servidor, passando o serviço escolhido
+            fetch('/get?msg=' + encodeURIComponent(userMessage) + '&service=' + service)
+                .then(response => response.json())
+                .then(data => {
+                    chatBox.innerHTML += '<div class="message bot"><strong>Bot (' + service + '):</strong> ' + data.response + '</div>';
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                })
+                .catch(error => {
+                    chatBox.innerHTML += '<div class="message bot"><strong>Bot:</strong> Erro ao obter resposta.</div>';
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de Engenharia de Software</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        #chat-box { width: 100%; height: 300px; overflow-y: auto; background-color: #fff; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        input[type="text"] { width: 80%; padding: 10px; border: 1px solid #ccc; }
+        button { padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>Chatbot de Engenharia de Software</h1>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Digite sua pergunta...">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        function sendMessage() {
+            var userMessage = document.getElementById("user-input").value;
+            var chatBox = document.getElementById("chat-box");
+
+            // Exibe a mensagem do usuário
+            chatBox.innerHTML += "<div><strong>Você:</strong> " + userMessage + "</div>";
+
+            // Envia a mensagem ao servidor e recebe a resposta
+            fetch('/get?msg=' + userMessage)
+                .then(response => response.json())
+                .then(data => {
+                    chatBox.innerHTML += "<div><strong>Bot:</strong> " + data.response + "</div>";
+                    document.getElementById("user-input").value = '';  // Limpa o campo de texto
+                    chatBox.scrollTop = chatBox.scrollHeight;  // Rola até a última mensagem
+                });
+        }
+    </script>
+</body>
+</html>
